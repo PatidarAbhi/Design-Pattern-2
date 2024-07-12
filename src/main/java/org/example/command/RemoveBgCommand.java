@@ -14,6 +14,6 @@ public class RemoveBgCommand implements Command {
 
     @Override
     public void execute() {
-        System.out.println("Removing background from image " + image);
+        backgroundRemovalService.removeBackground(image);
     }
 }
