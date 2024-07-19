@@ -9,7 +9,6 @@ public class ServiceAAdapter implements BackgroundRemovalService {
 
     @Override
     public void removeBackground(String image) {
-        System.out.println("Using Service A for background removal on image: " + image);
         serviceA.performBackgroundRemoval(image);
     }
 }

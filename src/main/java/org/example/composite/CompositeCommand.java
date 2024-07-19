@@ -3,7 +3,6 @@ package org.example.composite;
 import org.example.command.Command;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CompositeCommand implements Command {

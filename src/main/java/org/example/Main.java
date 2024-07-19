@@ -14,46 +14,46 @@ public class Main {
         Command resizeCommand = new ResizeCommand(image, 800, 600);
         Command cropCommand = new CropCommand(image, 10, 10, 50, 50);
 
-        // Create instances of third-party services
-        ServiceB serviceB = new ServiceB();
-
-        // Create adapters for services A and B
         BackgroundRemovalService normalBgRemoveService = new NormalBgRemoveService();
-        BackgroundRemovalService adapterB = new ServiceBAdapter(serviceB);
+
+        Command removeBgCommandWithNormalService = new RemoveBgCommand(image, normalBgRemoveService);
+
+        //executing commands with normal services
+        resizeCommand.execute();
+        cropCommand.execute();
+        removeBgCommandWithNormalService.execute();
+
+        // Create instances of third-party services
+        ServiceA serviceA = new ServiceA();
+
+        // Create adapters for services A
+        BackgroundRemovalService adapterA = new ServiceAAdapter(serviceA);
 
         // Use adapter A for background removal
-        Command removeBgCommandA = new RemoveBgCommand(image, normalBgRemoveService);
-        Command decoratedRemoveBgCommandA = new LoggingDecorator(
-                new CostDecorator(removeBgCommandA));
+        Command removeBgCommandB = new RemoveBgCommand(image, adapterA);
+        removeBgCommandB.execute();
 
 
-//        // Use adapter B for background removal
-        Command removeBgCommandB = new RemoveBgCommand(image, adapterB);
-        Command decoratedRemoveBgCommandB = new LoggingDecorator(
-                new CostDecorator(removeBgCommandB));
-
-        // Decorate resize and crop commands
+        //decorate commands with some new operation like login ,cost
         Command decoratedResizeCommand = new LoggingDecorator(
-                new CostDecorator(resizeCommand));
+                (resizeCommand));
+        decoratedResizeCommand.execute();
+
         Command decoratedCropCommand = new LoggingDecorator(
                 (cropCommand));
-
-        System.out.println("Executing Commands with Adapter A:");
-        decoratedResizeCommand.execute();
         decoratedCropCommand.execute();
+
+        Command decoratedRemoveBgCommandA = new LoggingDecorator(
+                new CostDecorator(removeBgCommandB));
         decoratedRemoveBgCommandA.execute();
 
-        //we can add  multiple commands
+        System.out.println("Executing multiple commands using composite pattern");
+          //we can add  multiple commands
         CompositeCommand compositeCommand = new CompositeCommand();
         compositeCommand.addCommand(decoratedResizeCommand);
-        compositeCommand.addCommand(cropCommand);
+        compositeCommand.addCommand(decoratedCropCommand);
         compositeCommand.addCommand(decoratedRemoveBgCommandA);
         compositeCommand.execute();
-
-       System.out.println("\nExecuting Commands with Adapter B:");
-        decoratedResizeCommand.execute();
-        decoratedCropCommand.execute();
-        decoratedRemoveBgCommandB.execute();
 
        // Payment processing
         PaymentStrategy paymentStrategy = new CreditCardPayment("1234-5678-9101-1121");
